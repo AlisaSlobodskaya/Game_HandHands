@@ -1,4 +1,7 @@
 import java.util.Random;
+import java.util.Scanner;
+
+import static constant.ImageAscii.DICE;
 
 public abstract class Creature {
     String name;
@@ -25,10 +28,12 @@ public abstract class Creature {
             Random random = new Random();
             int damage = random.nextInt(minDamage, maxDamage + 1);
             creature.takeDamage(damage);
+            Scanner scanner = new Scanner(System.in);
+            scanner.nextLine();
 
             if (creature.isDead())
-                System.out.println(name + " нанес критический урон " + creature.getName() + "..."
-                                    + "\n" + creature.getName() +" мертв");
+                System.out.println("\n" + name + " нанес критический урон " + creature.getName() + "..."
+                                    + "\n☠ " + creature.getName() +" мертв.");
         } else {
             System.out.println(creature.getName() + " увернулся от атаки!");
         }
@@ -37,16 +42,22 @@ public abstract class Creature {
     public boolean isAttackSuccessful(int attackModifier) {
         if (attackModifier < 1)
             attackModifier = 1;
+        System.out.println("Бросков кости: " + attackModifier);
 
-        for (int i = 1; i <= attackModifier; i++) {
-            Random random = new Random();
-            int diceRoll = random.nextInt(1,7);
-            System.out.println("Бросок кубика №" + i + " равен: " + diceRoll);
-            if (diceRoll == 5 || diceRoll == 6)
+        for (int i = 0; i < attackModifier; i++) {
+            int roll = rollDice();
+            if (roll == 4 || roll == 5)
                 return true;
         }
 
         return false;
+    }
+
+    public int rollDice() {
+        Random random = new Random();
+        int roll = random.nextInt(0,6);
+        System.out.println(DICE[roll]);
+        return roll;
     }
 
     public void takeDamage(int damage) {
@@ -55,8 +66,11 @@ public abstract class Creature {
             health = 0;
             isDead = true;
         }
-        System.out.println(name + " получил " + damage + " урона!" +
-                "\nТекущий уровень здоровья " + name + ": " + health);
+        System.out.println("\n" + name + " получил " + damage + " урона!" +
+                "\n♥ Текущий уровень здоровья " + name + ": " + health);
+
+        Scanner scanner = new Scanner(System.in);
+        scanner.nextLine();
     }
 
     public int getHealth() {
